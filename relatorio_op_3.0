@@ -1,0 +1,1298 @@
+from calendar import Calendar
+from datetime import date
+import locale
+from logging import root
+from pathlib import Path
+from tabnanny import check
+from tkinter import *
+from tkinter.tix import COLUMN
+from tkinter.ttk import *
+from turtle import width
+from typing_extensions import Self
+from click import command
+#from cupshelpers import missingExecutables
+from pytz import HOUR
+from tkcalendar import *
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import SimpleDocTemplate, Image
+import webbrowser
+from fpdf import FPDF
+from tkcalendar import Calendar, DateEntry
+from tkinter import ttk
+from tkinter import filedialog
+
+from sqlalchemy import create_engine
+
+from sqlalchemy import exc
+from sqlalchemy.exc import SQLAlchemyError
+
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import SimpleDocTemplate, Image
+from reportlab.lib.units import mm
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.pdfgen import canvas
+
+from textwrap import wrap
+
+import calendar
+from babel.dates import format_date, parse_date, get_day_names, get_month_names
+from babel.numbers import *  # Additional Import```
+
+
+
+from sqlalchemy import create_engine
+
+from sqlalchemy import exc
+from sqlalchemy.exc import SQLAlchemyError
+
+import pandas as pd
+
+
+from reportlab.lib.colors import HexColor
+import webbrowser
+
+
+
+import time 
+
+
+root = Tk()
+root.title('Relatório diário')
+root.geometry('900x600')
+
+fonte_1 = "Ubuntu, 14"
+cor_1 = "#B0C4DE"
+
+
+
+aba = ttk.Notebook(root)
+
+aba.place(x=0, y=0, width = 900, height=600)
+
+
+
+
+tb1 = Frame(aba)
+tb2 = Frame(aba)
+tb3 = Frame(aba)
+tb4 = Frame(aba)
+tb5 = Frame(aba)
+tb6 = Frame(aba)
+
+
+
+
+
+
+aba.add(tb1, text='Main')
+
+aba.add(tb2,text='Água e Óleo')
+
+aba.add(tb3, text='Cilindros')
+
+aba.add(tb4, text='Gás e Chiller')
+
+aba.add(tb5, text='Trafo e energia')
+
+aba.add(tb6, text='Imagens')
+
+
+
+
+
+num = IntVar()
+
+#criando calendario 
+#myCal = Calendar(root, setmode = 'day', date_pattern = 'dd/mm/yyyy')
+#myCal.grid(row=5, column=1, padx=5, pady=5, sticky=NSEW)
+
+
+#Criando combobox
+combo_entry = Combobox(tb1)
+
+combo2_entry = Combobox(tb1)
+
+#definindo valores combobox
+combo_entry['values' ] = ('Três Rios 1', 'Três Rios 2')
+combo_entry.grid(row=4, column=1, padx=5, pady=5, sticky=NSEW)
+
+combo2_entry['values' ] = ('Não', 'Sim')
+
+#posicionando a combobox
+combo_entry.grid(row=4, column=1, padx=5, pady=5, sticky=NSEW)
+label0 = Label(tb1, text='Selecione o Gerador')
+label0.grid(row=4, column=0, padx=5, pady=5, sticky=NSEW)
+
+combo2_entry.grid(row=22, column=1, padx=5, pady=5, sticky=NSEW)
+label0 = Label(tb1, text='Amostra de óleo coletada?')
+label0.grid(row=22, column=0, padx=5, pady=5, sticky=NSEW)
+
+
+
+
+
+#criando uma checkbox
+
+c = Checkbutton(tb1, text='Gerador em Operação?' )
+c.grid(row=4, column=3, padx=8, pady=8, sticky=NSEW)
+
+
+checkbutton_1 = IntVar()
+
+checkbutton_2 = IntVar()
+
+checkbutton_3 = IntVar()
+
+checkbutton_4 = IntVar()
+
+checkbutton_5 = IntVar()
+
+checkbutton_6 = IntVar()
+
+
+
+
+imagens_check = Checkbutton(tb6, text='Inserir imagem 1', variable = checkbutton_1, onvalue = 1, offvalue=0)
+imagens_check.place(relx= 0.05, rely=0.04, relwidth= 0.15, relheight= 0.05)
+
+imagens_check_2 = Checkbutton(tb6, text='Inserir imagem 2 ', variable = checkbutton_2, onvalue = 1, offvalue=0)
+imagens_check_2.place(relx= 0.05, rely=0.13, relwidth= 0.15, relheight= 0.05)
+
+imagens_check_3 = Checkbutton(tb6, text='Inserir imagem 3 ', variable = checkbutton_3, onvalue = 1, offvalue=0)
+imagens_check_3.place(relx= 0.05, rely=0.35, relwidth= 0.15, relheight= 0.05)
+
+imagens_check_4 = Checkbutton(tb6, text='Inserir imagem 4 ', variable = checkbutton_4, onvalue = 1, offvalue=0)
+imagens_check_4.place(relx= 0.05, rely=0.42, relwidth= 0.15, relheight= 0.05)
+
+imagens_check_5 = Checkbutton(tb6, text='Inserir imagem 5 ', variable = checkbutton_5, onvalue = 1, offvalue=0)
+imagens_check_5.place(relx= 0.05, rely=0.63, relwidth= 0.15, relheight= 0.05)
+
+imagens_check_6 = Checkbutton(tb6, text='Inserir imagem 6 ', variable = checkbutton_6, onvalue = 1, offvalue=0)
+imagens_check_6.place(relx= 0.05, rely=0.70, relwidth= 0.15, relheight= 0.05)
+
+
+
+
+
+
+
+
+#fazendo o relógio
+
+def clock ():
+    hour = time.strftime('%H')
+    minute = time.strftime('%M')
+    date = time.strftime('%d-%m-%Y')
+
+    label_clock.config(text= date + '   ' + hour + ':' + minute )
+    label_clock.after(1000, clock)
+
+def update():
+    label_clock.config(text='New Text')
+labelclock = Label(tb1, text='Data e Hora')
+labelclock.grid(row=3, column=0)
+label_clock = Label(tb1, text='', font=('Helvetica', 20))
+label_clock.grid(row=3, column=1)
+
+clock()
+
+#labels
+
+calendario_entry = time.strftime('%d-%m-%Y')
+
+h1 = time.strftime('%H:%M')
+
+
+### calendário
+
+
+
+cal=DateEntry(tb1,selectmode='day', height=5000, font='Ubuntu')
+cal.grid(row=3,column=7,padx=30)
+
+
+
+
+
+def my_upd(*args): # triggered when value of string varaible changes
+   ### l1.config(text=get()) # read and display date
+
+    l1=Label(tb1, bg='yellow', text='Data')  # Label to display date 
+    l1.grid(row=8, column=6, padx=5, pady=5, sticky=NSEW)
+
+
+
+labelteste = Label(tb1, text='Data')
+labelteste.grid(row=2, column=7, padx=8, pady=8, sticky=NSEW)
+
+
+def limpa_tela():
+
+        hora_entry.delete(0, END)
+        arranque_entry.delete(0, END)
+        itron_entry.delete(0, END)
+        diane_entry.delete(0, END)
+
+        hora_entry.delete(0, END)
+        combo_entry.delete(0, END)
+        combo2_entry.delete(0, END)
+        arranque_entry.delete(0, END)
+        itron_entry.delete(0, END)
+        diane_entry.delete(0, END)
+        potat_entry.delete(0, END)
+        potap_entry.delete(0, END)
+
+        tbat_entry.delete(0, END)
+
+        tmist_entry.delete(0, END)
+        pcarga_entry.delete(0, END)
+        gasmixer_entry.delete(0, END)
+        mariposa_entry.delete(0, END)
+        bypass_entry.delete(0, END)
+        toil_entry.delete(0, END)
+        poil_entry.delete(0, END)
+        twat_entry.delete(0, END)
+        pwat_entry.delete(0, END)
+
+        #cilindros
+
+        cil_1_entry.delete(0, END)
+        cil_2_entry.delete(0, END)
+        cil_3_entry.delete(0, END)
+        cil_4_entry.delete(0, END)
+        cil_5_entry.delete(0, END)
+        cil_6_entry.delete(0, END)
+        cil_7_entry.delete(0, END)
+        cil_8_entry.delete(0, END)
+        cil_9_entry.delete(0, END)
+        cil_10_entry.delete(0, END)
+        cil_11_entry.delete(0, END)
+        cil_12_entry.delete(0, END)
+        cil_13_entry.delete(0, END)
+        cil_14_entry.delete(0, END)
+        cil_15_entry.delete(0, END)
+        cil_16_entry.delete(0, END)
+        cil_17_entry.delete(0, END)
+        cil_18_entry.delete(0, END)
+        cil_19_entry.delete(0, END)
+        cil_20_entry.delete(0, END)
+
+        #dados do gas
+
+        vaz_entry.delete(0, END)
+        met_entry.delete(0, END)
+        h2s_entry.delete(0, END)
+        oxi_entry.delete(0, END)
+
+        #dados do chiller
+
+        chiller1_entry.delete(0, END)
+        chiller2_entry.delete(0, END)
+        chiller3_entry.delete(0, END)
+        chiller4_entry.delete(0, END)
+
+        #temperatura bobina do trafo
+
+        bobina1_entry.delete(0, END)
+        bobina2_entry.delete(0, END)
+        bobina3_entry.delete(0, END)
+
+        #Dados cabina de média tensão
+
+        kv_entry.delete(0, END)
+        amp_entry.delete(0, END)
+        exp_entry.delete(0, END)
+        noil_entry.delete(0,END)
+
+
+
+
+
+
+ 
+
+label0 = Label(tb1, text='Selecione o gerador:')
+label0.grid(row=4, column=0, padx=8, pady=8, sticky=NSEW)
+
+
+label1 = Label(tb1, text='Horas de operação:')
+label1.grid(row=5, column=0, padx=5, pady=5, sticky=NSEW)
+hora_entry = Entry(tb1, width = 10)
+hora_entry.grid(row=5, column=1)
+
+label2 = Label(tb1, text='Número de arranques:')
+label2.grid(row=6, column=0, padx=5, pady=5, sticky=NSEW)
+arranque_entry = Entry(tb1, width = 10)
+arranque_entry.grid(row=6, column=1)
+
+label3 = Label(tb1, text='Energia produzida Itron:')
+label3.grid(row=7, column=0, padx=5, pady=5, sticky=NSEW)
+itron_entry = Entry(tb1, width = 10)
+itron_entry.grid(row=7, column=1)
+
+label4 = Label(tb1, text='Energia produzida Diane:')
+label4.grid(row=8, column=0, padx=5, pady=5, sticky=NSEW)
+diane_entry = Entry(tb1, width = 10)
+diane_entry.grid(row=8, column=1)
+
+label5 = Label(tb1, text='Potência ativa:')
+label5.grid(row=9, column=0, padx=5, pady=5, sticky=NSEW)
+potat_entry = Entry(tb1, width = 10)
+potat_entry.grid(row=9, column=1)
+
+label6 = Label(tb1, text='Potência aparente:')
+label6.grid(row=10, column=0, padx=5, pady=5, sticky=NSEW)
+potap_entry = Entry(tb1, width = 10)
+potap_entry.grid(row=10, column=1)
+
+
+label7 = Label(tb1, text='Tensão das baterias:')
+label7.grid(row=11, column=0, padx=5, pady=5, sticky=NSEW)
+tbat_entry = Entry(tb1, width = 10)
+tbat_entry.grid(row=11, column=1)
+
+label8 = Label(tb1, text='Dados Leanox')
+label8.grid(row=12, column=0, padx=5, pady=5, sticky=NSEW)
+
+label9 = Label(tb1, text='Temperatura da mistura:')
+label9.grid(row=13, column=0, padx=5, pady=5, sticky=NSEW)
+tmist_entry = Entry(tb1, width = 10)
+tmist_entry.grid(row=13, column=1)
+
+label10 = Label(tb1, text='Pressão de carga:')
+label10.grid(row=14, column=0, padx=5, pady=5, sticky=NSEW)
+pcarga_entry = Entry(tb1, width = 10)
+pcarga_entry.grid(row=14, column=1)
+
+label11 = Label(tb1, text='Posição do regulador de gás:')
+label11.grid(row=15, column=0, padx=5, pady=5, sticky=NSEW)
+gasmixer_entry = Entry(tb1, width = 10)
+gasmixer_entry.grid(row=15, column=1)
+
+label12 = Label(tb1, text='Posição da válvula borboleta:')
+label12.grid(row=16, column=0, padx=5, pady=5, sticky=NSEW)
+mariposa_entry = Entry(tb1, width = 10)
+mariposa_entry.grid(row=16, column=1)
+
+label13 = Label(tb1, text='Posição do bypass:')
+label13.grid(row=17, column=0, padx=5, pady=5, sticky=NSEW)
+bypass_entry = Entry(tb1, width = 10)
+bypass_entry.grid(row=17, column=1)
+
+label14 = Label(tb2, text='Temperatura do óleo:', font=fonte_1)
+label14.place(relx= 0.03, rely=0.02, relwidth= 0.22, relheight= 0.05)
+toil_entry = Entry(tb2, width = 10, font=fonte_1)
+toil_entry.place(relx= 0.25, rely=0.02, relwidth= 0.10, relheight= 0.05)
+
+label15 = Label(tb2, text='Pressão de óleo:', font=fonte_1)
+label15.place(relx= 0.03, rely=0.10, relwidth= 0.22, relheight= 0.05)
+poil_entry = Entry(tb2, width = 10, font=fonte_1)
+poil_entry.place(relx= 0.25, rely=0.10, relwidth= 0.10, relheight= 0.05)
+
+label16 = Label(tb2, text='Temperatura de água:', font=fonte_1)
+label16.place(relx= 0.03, rely=0.20, relwidth= 0.22, relheight= 0.05)
+twat_entry = Entry(tb2, width = 10, font=fonte_1)
+twat_entry.place(relx= 0.25, rely=0.20, relwidth= 0.10, relheight= 0.05)
+
+label17 = Label(tb2, text='Pressão de água:', font=fonte_1)
+label17.place(relx= 0.03, rely=0.30, relwidth= 0.22, relheight= 0.05)
+pwat_entry = Entry(tb2, width = 10, font=fonte_1)
+pwat_entry.place(relx= 0.25, rely=0.30, relwidth= 0.10, relheight= 0.05)
+
+label18 = Label(tb3, text='Temperatura de cilindros')
+label18.grid(row=23, column=0, padx=5, pady=5, sticky=NSEW)
+
+label19 = Label(tb3, text='Cilindro 1')
+label19.grid(row=24, column=0, padx=5, pady=5, sticky=NSEW)
+cil_1_entry = Entry(tb3, width = 10)
+cil_1_entry.grid(row=24, column=1)
+
+label20 = Label(tb3, text='Cilindro 2')
+label20.grid(row=25, column=0, padx=5, pady=5, sticky=NSEW)
+cil_2_entry = Entry(tb3, width = 10)
+cil_2_entry.grid(row=25, column=1)
+
+label21 = Label(tb3, text='Cilindro 3')
+label21.grid(row=26, column=0, padx=5, pady=5, sticky=NSEW)
+cil_3_entry = Entry(tb3, width = 10)
+cil_3_entry.grid(row=26, column=1)
+
+label22 = Label(tb3, text='Cilindro 4')
+label22.grid(row=27, column=0, padx=5, pady=5, sticky=NSEW)
+cil_4_entry = Entry(tb3, width = 10)
+cil_4_entry.grid(row=27, column=1)
+
+label23 = Label(tb3, text='Cilindro 5')
+label23.grid(row=28, column=0, padx=5, pady=5, sticky=NSEW)
+cil_5_entry = Entry(tb3, width = 10)
+cil_5_entry.grid(row=28, column=1)
+
+
+label24 = Label(tb3, text='Cilindro 6')
+label24.grid(row=24, column=2, padx=5, pady=5, sticky=NSEW)
+cil_6_entry = Entry(tb3, width = 10)
+cil_6_entry.grid(row=24, column=3)
+
+label25 = Label(tb3, text='Cilindro 7')
+label25.grid(row=25, column=2, padx=5, pady=5, sticky=NSEW)
+cil_7_entry = Entry(tb3, width = 10)
+cil_7_entry.grid(row=25, column=3)
+
+label26 = Label(tb3, text='Cilindro 8')
+label26.grid(row=26, column=2, padx=5, pady=5, sticky=NSEW)
+cil_8_entry = Entry(tb3, width = 10)
+cil_8_entry.grid(row=26, column=3)
+
+label27 = Label(tb3, text='Cilindro 9')
+label27.grid(row=27, column=2, padx=5, pady=5, sticky=NSEW)
+cil_9_entry = Entry(tb3, width = 10)
+cil_9_entry.grid(row=27, column=3)
+
+label28 = Label(tb3, text='Cilindro 10')
+label28.grid(row=28, column=2, padx=5, pady=5, sticky=NSEW)
+cil_10_entry = Entry(tb3, width = 10)
+cil_10_entry.grid(row=28, column=3)
+
+
+label29 = Label(tb3, text='Cilindro 11')
+label29.grid(row=24, column=4, padx=5, pady=5, sticky=NSEW)
+cil_11_entry = Entry(tb3, width = 10)
+cil_11_entry.grid(row=24, column=6)
+
+label30 = Label(tb3, text='Cilindro 12')
+label30.grid(row=25, column=4, padx=5, pady=5, sticky=NSEW)
+cil_12_entry = Entry(tb3, width = 10)
+cil_12_entry.grid(row=25, column=6)
+
+label31 = Label(tb3, text='Cilindro 13')
+label31.grid(row=26, column=4, padx=5, pady=5, sticky=NSEW)
+cil_13_entry = Entry(tb3, width = 10)
+cil_13_entry.grid(row=26, column=6)
+
+label32 = Label(tb3, text='Cilindro 14')
+label32.grid(row=27, column=4, padx=5, pady=5, sticky=NSEW)
+cil_14_entry = Entry(tb3, width = 10)
+cil_14_entry.grid(row=27, column=6)
+
+label33 = Label(tb3, text='Cilindro 15')
+label33.grid(row=28, column=4, padx=5, pady=5, sticky=NSEW)
+cil_15_entry = Entry(tb3, width = 10)
+cil_15_entry.grid(row=28, column=6)
+
+
+label34 = Label(tb3, text='Cilindro 16')
+label34.grid(row=24, column=7, padx=5, pady=5, sticky=NSEW)
+cil_16_entry = Entry(tb3, width = 10)
+cil_16_entry.grid(row=24, column=8)
+
+label35 = Label(tb3, text='Cilindro 17')
+label35.grid(row=25, column=7, padx=5, pady=5, sticky=NSEW)
+cil_17_entry = Entry(tb3, width = 10)
+cil_17_entry.grid(row=25, column=8)
+
+label36 = Label(tb3, text='Cilindro 18')
+label36.grid(row=26, column=7, padx=5, pady=5, sticky=NSEW)
+cil_18_entry = Entry(tb3, width = 10)
+cil_18_entry.grid(row=26, column=8)
+
+label37 = Label(tb3, text='Cilindro 19')
+label37.grid(row=27, column=7, padx=5, pady=5, sticky=NSEW)
+cil_19_entry = Entry(tb3, width = 10)
+cil_19_entry.grid(row=27, column=8)
+
+label38 = Label(tb3, text='Cilindro 20')
+label38.grid(row=28, column=7, padx=5, pady=5, sticky=NSEW)
+cil_20_entry = Entry(tb3, width = 10)
+cil_20_entry.grid(row=28, column=8)
+
+label39 = Label(tb4, text='Dados do Gás')
+label39.grid(row=29, column=0, padx=5, pady=5, sticky=NSEW)
+
+label40 = Label(tb4, text='Vazão de gás')
+label40.grid(row=30, column=0, padx=5, pady=5, sticky=NSEW)
+vaz_entry = Entry(tb4, width = 10)
+vaz_entry.grid(row=30, column=1)
+
+label41 = Label(tb4, text='Teor de metano')
+label41.grid(row=30, column=2, padx=5, pady=5, sticky=NSEW)
+met_entry = Entry(tb4, width = 10)
+met_entry.grid(row=30, column=3)
+
+label42 = Label(tb4, text='Nível de H2s')
+label42.grid(row=30, column=5, padx=5, pady=5, sticky=NSEW)
+h2s_entry = Entry(tb4, width = 10)
+h2s_entry.grid(row=30, column=6)
+
+label43 = Label(tb4, text='Teor de Oxigênio')
+label43.grid(row=30, column=7, padx=5, pady=5, sticky=NSEW)
+oxi_entry = Entry(tb4, width = 10)
+oxi_entry.grid(row=30, column=8)
+
+#dados do chiller
+
+label44 = Label(tb4, text='Dados do chiller')
+label44.grid(row=33, column=0, padx=5, pady=5, sticky=NSEW)
+
+label45 = Label(tb4, text='Primeiro estágio')
+label45.grid(row=34, column=0, padx=5, pady=5, sticky=NSEW)
+chiller1_entry = Entry(tb4, width = 10)
+chiller1_entry.grid(row=34, column=1)
+
+label46 = Label(tb4, text='Segundo estágio')
+label46.grid(row=34, column=2, padx=5, pady=5, sticky=NSEW)
+chiller2_entry = Entry(tb4, width = 10)
+chiller2_entry.grid(row=34, column=3)
+
+label47 = Label(tb4, text='Terceiro estágio')
+label47.grid(row=34, column=5, padx=5, pady=5, sticky=NSEW)
+chiller3_entry = Entry(tb4, width = 10)
+chiller3_entry.grid(row=34, column=6)
+
+label48 = Label(tb4, text='Quarto estágio')
+label48.grid(row=34, column=7, padx=5, pady=5, sticky=NSEW)
+chiller4_entry = Entry(tb4, width = 10)
+chiller4_entry.grid(row=34, column=8)
+
+
+
+noillabel= Label(tb1, text='Nível de óleo' )
+noillabel.grid(row=8, column=3, padx=5, pady=5, sticky=NSEW)
+noil_entry = Entry(tb1, width = 10)
+noil_entry.grid(row=8, column=4)
+
+
+
+#bobina do trafo
+
+label49 = Label(tb5, text='Temperatura do Trafo')
+label49.grid(row=11, column=3, padx=5, pady=5, sticky=NSEW)
+
+
+label50 = Label(tb5, text='Bobina 1')
+label50.grid(row=12, column=3, padx=5, pady=5, sticky=NSEW)
+bobina1_entry = Entry(tb5, width = 10)
+bobina1_entry.grid(row=12, column=4)
+
+label51 = Label(tb5, text='Bobina 2')
+label51.grid(row=12, column=6, padx=5, pady=5, sticky=NSEW)
+bobina2_entry = Entry(tb5, width = 10)
+bobina2_entry.grid(row=12, column=7)
+
+label52 = Label(tb5, text='Bobina 3')
+label52.grid(row=12, column=9, padx=5, pady=5, sticky=NSEW)
+bobina3_entry = Entry(tb5, width = 10)
+bobina3_entry.grid(row=12, column=10)
+
+label53 = Label(tb5, text='Dados cabine de média tensão')
+label53.grid(row=15, column=3, padx=5, pady=5, sticky=NSEW)
+
+
+
+label54 = Label(tb5, text='Tensão')
+label54.grid(row=16, column=3, padx=5, pady=5, sticky=NSEW)
+kv_entry = Entry(tb5, width = 10)
+kv_entry.grid(row=16, column=4)
+
+label55 = Label(tb5, text='Corrente')
+label55.grid(row=16, column=6, padx=5, pady=5, sticky=NSEW)
+amp_entry = Entry(tb5, width = 10)
+amp_entry.grid(row=16, column=7)
+
+label56 = Label(tb5, text='Energia exportada')
+label56.grid(row=16, column=9, padx=5, pady=5, sticky=NSEW)
+exp_entry = Entry(tb5, width = 10)
+exp_entry.grid(row=16, column=10)
+
+
+def avancar_1():
+
+    aba.select(1)
+
+def avancar_2():
+
+    aba.select(2)
+
+def avancar_3():
+
+    aba.select(3)
+
+def avancar_4():
+
+    aba.select(4)
+
+def avancar_5():
+
+    aba.select(5)
+
+
+
+
+
+
+
+
+
+
+
+def img_1():
+
+
+  
+    tb6.filename_1 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_label = Label(tb6, text=tb6.filename_1)
+    my_label.place(relx= 0.38, rely=0.04, relwidth= 0.58, relheight= 0.05)
+   
+
+
+
+def img_2():
+
+    tb6.filename_2 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_labe2 = Label(tb6, text=tb6.filename_2)
+    my_labe2.place(relx= 0.38, rely=0.13, relwidth= 0.58, relheight= 0.05)
+
+
+
+def img_3():
+
+    tb6.filename_3 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_labe3 = Label(tb6, text=tb6.filename_3)
+    my_labe3.place(relx= 0.38, rely=0.35, relwidth= 0.58, relheight= 0.05)
+
+
+
+def img_4():
+
+    tb6.filename_4 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_labe4 = Label(tb6, text=tb6.filename_4)
+    my_labe4.place(relx= 0.38, rely=0.42, relwidth= 0.58, relheight= 0.05)
+ 
+
+
+def img_5():
+
+    tb6.filename_5 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_labe5 = Label(tb6, text=tb6.filename_5)
+    my_labe5.place(relx= 0.38, rely=0.63, relwidth= 0.58, relheight= 0.05)
+
+
+def img_6():
+
+    tb6.filename_6 = filedialog.askopenfilename(title='Escolha uma imagem', filetypes=(("arquivos jpeg",'*.jpeg'),('arquivos jpg', '*.jpg'),('arquivos png', '*.png')))
+
+    my_labe6 = Label(tb6, text=tb6.filename_6)
+    my_labe6.place(relx= 0.38, rely=0.70, relwidth= 0.58, relheight= 0.05)
+
+
+
+
+
+ 
+
+
+
+botao_1 = Button(tb6, text='Inserir imagem 1', command=img_1)
+botao_1.place(relx= 0.2, rely=0.04, relwidth= 0.15, relheight= 0.05)
+
+botao_2 = Button(tb6, text='Inserir imagem 2', command=img_2)
+botao_2.place(relx= 0.2, rely=0.13, relwidth= 0.15, relheight= 0.05)
+
+botao_3 = Button(tb6, text='Inserir imagem 3', command=img_3)
+botao_3.place(relx= 0.2, rely=0.35, relwidth= 0.15, relheight= 0.05)
+
+botao_4 = Button(tb6, text='Inserir imagem 4', command=img_4)
+botao_4.place(relx= 0.2, rely=0.42, relwidth= 0.15, relheight= 0.05)
+
+botao_5 = Button(tb6, text='Inserir imagem 5', command=img_5)
+botao_5.place(relx= 0.2, rely=0.63, relwidth= 0.15, relheight= 0.05)
+
+botao_6 = Button(tb6, text='Inserir imagem 6', command=img_6)
+botao_6.place(relx= 0.2, rely=0.70, relwidth= 0.15, relheight= 0.05)
+
+
+
+botao_avancar_1 = Button(tb1, text='Avançar', command=avancar_1)
+botao_avancar_1.place(relx= 0.83, rely=0.20, relwidth= 0.15, relheight= 0.05)
+
+botao_avancar_2 = Button(tb2, text='Avançar', command=avancar_2)
+botao_avancar_2.place(relx= 0.83, rely=0.20, relwidth= 0.15, relheight= 0.05)
+
+botao_avancar_3 = Button(tb3, text='Avançar', command=avancar_3)
+botao_avancar_3.place(relx= 0.83, rely=0.20, relwidth= 0.15, relheight= 0.05)
+
+botao_avancar_4 = Button(tb4, text='Avançar', command=avancar_4)
+botao_avancar_4.place(relx= 0.83, rely=0.20, relwidth= 0.15, relheight= 0.05)
+
+botao_avancar_5 = Button(tb5, text='Avançar', command=avancar_5)
+botao_avancar_5.place(relx= 0.83, rely=0.20, relwidth= 0.15, relheight= 0.05)
+
+
+
+
+
+
+
+
+label19 = Label(tb6, text='Resumo / Inicio:', font='Ubuntu, 16')
+label19.place(relx= 0.08, rely=0.19, relwidth= 0.25, relheight= 0.045)
+text1_entry = Text(tb6, width = 20, height=20)
+text1_entry.place(relx= 0.08, rely=0.24, relwidth= 0.60, relheight= 0.10)
+
+text2_entry = Text(tb6, width = 20, height=20)
+text2_entry.place(relx= 0.08, rely=0.50, relwidth= 0.60, relheight= 0.10)
+
+text3_entry = Text(tb6, width = 20, height=20)
+text3_entry.place(relx= 0.08, rely=0.76, relwidth= 0.60, relheight= 0.10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#botão imprimir pdf
+
+class Relatorios():
+    def printPdf(self):
+        webbrowser.open('relatorio_diário')
+
+
+def geraRelatorio():
+
+        combo = combo_entry.get()
+        combo2 = combo2_entry.get()
+        calendario = calendario_entry
+        
+        c = canvas.Canvas('Relatório diário' ' ' + combo + ' ' + calendario + '.pdf')
+
+        checagem = checkbutton_1.get()
+
+        checagem_2 = checkbutton_2.get()
+
+        checagem_3 = checkbutton_3.get()
+
+        checagem_4 = checkbutton_4.get()
+
+        checagem_5 = checkbutton_5.get()
+
+        checagem_6 = checkbutton_6.get()
+
+
+
+
+
+        if checagem == 1:
+
+            imagem1 = tb6.filename_1
+
+        if checagem_2 == 1:
+
+            imagem2 = tb6.filename_2
+
+        if checagem_3 == 1:
+
+            imagem3 = tb6.filename_3
+
+        if checagem_4 == 1:
+
+            imagem4 = tb6.filename_4
+
+        if checagem_5 == 1:
+
+            imagem5 = tb6.filename_5
+
+        if checagem_6 == 1:
+
+            imagem6 = tb6.filename_6
+
+
+
+
+        hora = hora_entry.get()
+        gerador = combo_entry.get()
+        arranque = arranque_entry.get()
+        itron = itron_entry.get()
+        diane = diane_entry.get()
+        potat = potat_entry.get()
+        potap = potap_entry.get()
+
+        
+
+        tbat = tbat_entry.get()
+
+        tmist = tmist_entry.get()
+        pcarga = pcarga_entry.get()
+        gasmixer = gasmixer_entry.get()
+        mariposa = mariposa_entry.get()
+        bypass = bypass_entry.get()
+        toil = toil_entry.get()
+        poil = poil_entry.get()
+        twat = twat_entry.get()
+        pwat = pwat_entry.get()
+        noil = noil_entry.get()
+
+        #cilindros
+
+        cil1 = cil_1_entry.get()
+        cil2 = cil_2_entry.get()
+        cil3 = cil_3_entry.get()
+        cil4 = cil_4_entry.get()
+        cil5 = cil_5_entry.get()
+        cil6 = cil_6_entry.get()
+        cil7 = cil_7_entry.get()
+        cil8 = cil_8_entry.get()
+        cil9 = cil_9_entry.get()
+        cil10 = cil_10_entry.get()
+        cil11 = cil_11_entry.get()
+        cil12 = cil_12_entry.get()
+        cil13 = cil_13_entry.get()
+        cil14 = cil_14_entry.get()
+        cil15 = cil_15_entry.get()
+        cil16 = cil_16_entry.get()
+        cil17 = cil_17_entry.get()
+        cil18 = cil_18_entry.get()
+        cil19 = cil_19_entry.get()
+        cil20 = cil_20_entry.get()
+
+        #dados do gas
+
+        vaz = vaz_entry.get()
+        met = met_entry.get()
+        h2s = h2s_entry.get()
+        oxi = oxi_entry.get()
+
+        #dados do chiller
+
+        chiller1 = chiller1_entry.get()
+        chiller2 = chiller2_entry.get()
+        chiller3 = chiller3_entry.get()
+        chiller4 = chiller4_entry.get()
+
+
+        # controle nível de óleo
+
+        noil = noil_entry.get()
+
+        #temperatura bobina do trafo
+
+        bobina1 = bobina1_entry.get()
+        bobina2 = bobina2_entry.get()
+        bobina3 = bobina3_entry.get()
+
+        #Dados cabina de média tensão
+
+        kv = kv_entry.get()
+        amp = amp_entry.get()
+        exp = exp_entry.get()
+
+
+        #texto
+
+        ctext = text1_entry.get("1.0",'end-1c')[:300]
+
+        ctext2 = text2_entry.get("1.0",'end-1c')[:300]
+
+        ctext3 = text3_entry.get("1.0",'end-1c')[:300]
+
+
+
+        
+
+
+
+
+    
+
+
+        #cabeçalho
+
+        c.setFont('Helvetica', 18)
+        c.drawString(30, 780, 'Relatório diário posição em ' + calendario )
+        
+
+       
+        c.setFont('Helvetica', 10)
+        c.drawString(30, 730, 'Gerador:')
+        c.drawString(330, 730, gerador)
+        c.drawString(30, 715,  'Data')
+        c.drawString(220, 715, 'dd-mm-yyyy')
+        c.drawString(330, 715, calendario)
+        c.drawString(30, 700,  'Hora')
+        c.drawString(220, 700, 'hh:mm')
+        c.drawString(330, 700, '{}'.format(h1))
+
+
+
+
+
+
+
+        c.drawString(30, 685, 'Horas de operação:')
+        c.drawString(220, 685, 'horas')
+        c.drawString(330, 685, hora)
+        c.drawString(30, 670, 'Número de arranques:')
+        c.drawString(220, 670, 'Qtd')
+        c.drawString(330, 670, arranque)
+        c.drawString(30, 655, 'Energia produzida Itron:')
+        c.drawString(220, 655, 'KWh')
+        c.drawString(330, 655, itron)
+        c.drawString(30, 640, 'Energia produzida Diane:')
+        c.drawString(220, 640, 'MWh')
+        c.drawString(330, 640, diane)
+
+        c.drawString(30, 625, 'Potência ativa:')
+        c.drawString(220, 625, 'KW')
+        c.drawString(330, 625, potat)
+        c.drawString(30, 610, 'Potência aparente:')
+        c.drawString(220, 610, 'Kva')
+        c.drawString(330, 610, potap)
+
+        c.drawImage("logo.png",480, 750, 35*mm, 35*mm)
+
+
+
+
+        c.drawString(30, 595, 'Tensão das baterias:')
+        c.drawString(220, 595, 'Vcc')
+        c.drawString(330, 595, tbat)
+
+
+
+        c.setFont('Helvetica', 12)
+        c.drawString(30, 570, 'Dados de Leanox')
+
+        c.setFont('Helvetica', 10)
+
+        c.drawString(30, 545, 'Temperatura da mistura:')
+        c.drawString(220, 545, 'ºC')
+        c.drawString(330, 545, tmist)
+
+        c.drawString(30, 530, 'Pressão de carga:')
+        c.drawString(220, 530, 'Bar')
+        c.drawString(330, 530, pcarga)
+
+        c.drawString(30, 515, 'Posição do gás mixer:')
+        c.drawString(220, 515, '%')
+        c.drawString(330, 515, gasmixer)
+
+        c.drawString(30, 500, 'Posição da válvula borboleta:')
+        c.drawString(220, 500, '%')
+        c.drawString(330, 500, mariposa)
+
+        c.drawString(30, 485, 'Posição do bypass:')
+        c.drawString(220, 485, '%')
+        c.drawString(330, 485, bypass)
+
+        c.drawString(30, 470, 'Temperatura de óleo:')
+        c.drawString(220, 470, 'ºC')
+        c.drawString(330, 470, toil)
+
+        c.drawString(30, 455, 'Pressão de óleo:')
+        c.drawString(220, 455, 'Bar')
+        c.drawString(330, 455, poil)
+
+        c.drawString(30, 440, 'Temperatura de água:')
+        c.drawString(220, 440, 'ºC')
+        c.drawString(330, 440, twat)
+
+        c.drawString(30, 425, 'Pressão de água:')
+        c.drawString(220, 425, 'Bar')
+        c.drawString(330, 425, pwat)
+
+        c.drawString(30, 410, 'Amostra de óleo coletada:')
+        c.drawString(220, 410, 'S/N')
+        c.drawString(330, 410, combo2)
+
+        c.setFont('Helvetica', 12)
+        c.drawString(30, 385, 'Temperatura de cilindros')
+        c.setFont('Helvetica', 10)
+
+        c.drawString(30, 360, 'Cilindro 1')
+        c.drawString(90, 360, 'ºC')
+        c.drawString(122, 360, cil1)
+
+        c.drawString(30, 345, 'Cilindro 2')
+        c.drawString(90, 345, 'ºC')
+        c.drawString(122, 345, cil2)
+
+        c.drawString(30, 330, 'Cilindro 3')
+        c.drawString(90, 330, 'ºC')
+        c.drawString(122, 330, cil3)
+
+        c.drawString(30, 315, 'Cilindro 4')
+        c.drawString(90, 315, 'ºC')
+        c.drawString(122, 315, cil4)
+
+        c.drawString(30, 300, 'Cilindro 5')
+        c.drawString(90, 300, 'ºC')
+        c.drawString(122, 300, cil5)
+
+        c.drawString(180, 360, 'Cilindro 6')
+        c.drawString(240, 360, 'ºC')
+        c.drawString(272, 360, cil6)
+
+        c.drawString(180, 345, 'Cilindro 7')
+        c.drawString(240, 345, 'ºC')
+        c.drawString(272, 345, cil7)
+
+        c.drawString(180, 330, 'Cilindro 8')
+        c.drawString(240, 330, 'ºC')
+        c.drawString(272, 330, cil8)
+
+        c.drawString(180, 315, 'Cilindro 9')
+        c.drawString(240, 315, 'ºC')
+        c.drawString(272, 315, cil9)
+
+        c.drawString(180, 300, 'Cilindro 10')
+        c.drawString(240, 300, 'ºC')
+        c.drawString(272, 300, cil10)
+
+        c.drawString(330, 360, 'Cilindro 11')
+        c.drawString(390, 360, 'ºC')
+        c.drawString(422, 360, cil11)
+
+        c.drawString(330, 345, 'Cilindro 12')
+        c.drawString(390, 345, 'ºC')
+        c.drawString(422, 345, cil12)
+
+        c.drawString(330, 330, 'Cilindro 13')
+        c.drawString(390, 330, 'ºC')
+        c.drawString(422, 330, cil13)
+
+        c.drawString(330, 315, 'Cilindro 14')
+        c.drawString(390, 315, 'ºC')
+        c.drawString(422, 315, cil14)
+
+        c.drawString(330, 300, 'Cilindro 15')
+        c.drawString(390, 300, 'ºC')
+        c.drawString(422, 300, cil15)
+
+        c.drawString(480, 360, 'Cilindro 16')
+        c.drawString(540, 360, 'ºC')
+        c.drawString(572, 360, cil16)
+
+        c.drawString(480, 345, 'Cilindro 17')
+        c.drawString(540, 345, 'ºC')
+        c.drawString(572, 345, cil17)
+
+        c.drawString(480, 330, 'Cilindro 18')
+        c.drawString(540, 330, 'ºC')
+        c.drawString(572, 330, cil18)
+
+        c.drawString(480, 315, 'Cilindro 19')
+        c.drawString(540, 315, 'ºC')
+        c.drawString(572, 315, cil19)
+
+        c.drawString(480, 300, 'Cilindro 20')
+        c.drawString(540, 300, 'ºC')
+        c.drawString(572, 300, cil20)
+
+        c.setFont('Helvetica', 12)
+        c.drawString(30, 275, 'Dados do gás')
+        c.setFont('Helvetica', 10)
+
+        c.drawString(30, 250, 'Vazão de gás')
+        c.drawString(220, 250, 'Nm³')
+        c.drawString(330, 250, vaz)
+
+        c.drawString(30, 235, 'Teor de metano')
+        c.drawString(220, 235, '%')
+        c.drawString(330, 235, met)
+
+        c.drawString(30, 220, 'Nível de H2s')
+        c.drawString(220, 220, 'ppm')
+        c.drawString(330, 220, h2s)
+
+        c.drawString(30, 205, 'Nível de oxigênio')
+        c.drawString(220, 205, '%')
+        c.drawString(330, 205, oxi)
+
+        c.setFont('Helvetica', 12)
+        c.drawString(30, 180, 'Dados do chiller')
+        c.setFont('Helvetica', 10)
+
+        c.drawString(30, 155, 'Temperatura primeiro estágio')
+        c.drawString(200, 155, 'ºC')
+        c.drawString(240, 155, chiller1)
+
+        c.drawString(30, 140, 'Temperatura segundo estágio')
+        c.drawString(200, 140, 'ºC')
+        c.drawString(240, 140, chiller2)
+
+        c.drawString(310, 155, 'Temperatura terceiro estágio')
+        c.drawString(440, 155, 'ºC')
+        c.drawString(480, 155, chiller3)
+
+        c.drawString(310, 140, 'Temperatura quarto estágio')
+        c.drawString(440, 140, 'ºC')
+        c.drawString(480, 140, chiller4)
+
+        c.setFont('Helvetica', 11)
+        c.drawString(30, 115, 'Temperatura bobina do trafo')
+        c.setFont('Helvetica', 10)
+
+        c.drawString(30, 90, 'Bobina 1')
+        c.drawString(100, 90, 'ºC' )
+        c.drawString(140, 90, bobina1)
+
+        c.drawString(30, 75, 'Bobina 2')
+        c.drawString(100, 75, 'ºC' )
+        c.drawString(140, 75, bobina2)
+
+        c.drawString(30, 60, 'Bobina 3')
+        c.drawString(100, 60, 'ºC' )
+        c.drawString(140, 60, bobina3)
+
+        c.setFont('Helvetica', 11)
+        c.drawString(310, 115, 'Dados cabine média tensão')
+        c.setFont('Helvetica', 10)
+
+        c.drawString(310, 90, 'Tensão')
+        c.drawString(400, 90, 'KV' )
+        c.drawString(440, 90, kv)
+
+        c.drawString(310, 75, 'Corrente')
+        c.drawString(400, 75, 'A' )
+        c.drawString(440, 75, amp)
+
+        c.drawString(310, 60, 'Energia exportada')
+        c.drawString(400, 60, 'MWh' )
+        c.drawString(440, 60, exp)
+
+        c.drawString(460, 410, 'Nível de óleo')
+        c.drawString(540, 410, 'cm' )
+        c.drawString(572, 410, noil)
+
+
+        print(checagem)
+        
+
+
+    
+        c.showPage()
+
+        if checagem == 1:
+
+
+            c.setFont('Helvetica', 16)
+            c.setFillColor(HexColor('#ff8100'))
+            c.drawString(35, 770, 'Andamento dos trabalhos / atuação (fotos)' )
+
+            c.setFillColor(HexColor('#000000'))
+
+            c.drawImage("logo.png",480, 750, 35*mm, 35*mm)
+
+            c.drawImage(imagem1, 35,600, 79.5*mm, 44.5*mm)
+
+
+            meu_texto = c.beginText()
+            meu_texto.setTextOrigin(35,565)
+            meu_texto.setFont('Helvetica',12)
+           
+
+            wraped_text = "\n".join(wrap(ctext, 80))
+
+            meu_texto.textLines(wraped_text)
+
+           
+            c.drawText(meu_texto)
+
+            meu_texto2 = c.beginText()
+            meu_texto2.setTextOrigin(35,340)
+            meu_texto2.setFont('Helvetica',12)
+           
+
+            wraped_text2 = "\n".join(wrap(ctext2, 80))
+
+            meu_texto2.textLines(wraped_text2)
+
+           
+            c.drawText(meu_texto2)
+
+            meu_texto3 = c.beginText()
+            meu_texto3.setTextOrigin(35,100)
+            meu_texto3.setFont('Helvetica',12)
+           
+
+            wraped_text3 = "\n".join(wrap(ctext3, 80))
+
+            meu_texto3.textLines(wraped_text3)
+
+           
+            c.drawText(meu_texto3)
+
+
+
+
+
+        if checagem_2 == 1:
+
+            c.drawImage(imagem2, 300,600, 79.5*mm, 44.5*mm)
+
+        if checagem_3 == 1:
+
+            c.drawImage(imagem3, 35,370, 79.5*mm, 44.5*mm)
+
+        if checagem_4 == 1:
+            c.drawImage(imagem4,300,370, 79.5*mm, 44.5*mm) 
+
+        if checagem_5 == 1:
+            c.drawImage(imagem5,35,130, 79.5*mm, 44.5*mm) 
+
+
+        if checagem_6 == 1:
+            c.drawImage(imagem6,300,130, 79.5*mm, 44.5*mm) 
+
+
+
+
+
+
+
+
+
+
+
+
+        c.save()
+       
+
+mybutton = Button(tb1, text='Gerar Pdf!', command=geraRelatorio)
+mybutton.place(relx= 0.60, rely=0.45, relwidth= 0.15, relheight= 0.06)
+
+
+mybutton2 = Button(tb1, text='Limpar tela!', command=limpa_tela)
+mybutton2.place(relx= 0.60, rely=0.55, relwidth= 0.15, relheight= 0.06)
+
+mybutton3 = Button(tb6, text='Gerar Pdf!', command=geraRelatorio)
+mybutton3.place(relx= 0.80, rely=0.2, relwidth= 0.15, relheight= 0.06)
+
+
+
+        
+
+
+
+
+
+
+root.mainloop()
